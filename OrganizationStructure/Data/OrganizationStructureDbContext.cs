@@ -32,5 +32,30 @@ namespace OrganizationStructure.Data
             }
         }
 
+        public void AddNode(IOrganizationNode node)
+        {
+            if (node.GetType() == typeof(Company))
+                Companies.Add((Company)node);
+            if (node.GetType() == typeof(Division))
+                Divisions.Add((Division)node);
+            if (node.GetType() == typeof(Project))
+                Projects.Add((Project)node);
+            if (node.GetType() == typeof(Department))
+                Departments.Add((Department)node);
+        }
+
+        public void RemoveNode(IOrganizationNode node)
+        {
+            if (node.GetType() == typeof(Company))
+                Companies.Remove((Company)node);
+            if (node.GetType() == typeof(Division))
+                Divisions.Remove((Division)node);
+            if (node.GetType() == typeof(Project))
+                Projects.Remove((Project)node);
+            if (node.GetType() == typeof(Department))
+                Departments.Remove((Department)node);
+        }
+
+
     }
 }
