@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrganizationStructure.Data;
 
@@ -11,9 +12,10 @@ using OrganizationStructure.Data;
 namespace OrganizationStructure.Migrations
 {
     [DbContext(typeof(OrganizationStructureDbContext))]
-    partial class OrganizationStructureDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220828203751_AddedNodeEmployees")]
+    partial class AddedNodeEmployees
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,12 +67,7 @@ namespace OrganizationStructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
 
                     b.ToTable("Departments");
                 });
@@ -87,9 +84,6 @@ namespace OrganizationStructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("LeaderId")
                         .HasColumnType("int");
 
@@ -98,8 +92,6 @@ namespace OrganizationStructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
 
                     b.ToTable("Divisions");
                 });
@@ -164,9 +156,6 @@ namespace OrganizationStructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DivisionId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("LeaderId")
                         .HasColumnType("int");
 
@@ -176,23 +165,7 @@ namespace OrganizationStructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DivisionId");
-
                     b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("OrganizationStructure.Models.Department", b =>
-                {
-                    b.HasOne("OrganizationStructure.Models.Project", null)
-                        .WithMany("Departments")
-                        .HasForeignKey("ProjectId");
-                });
-
-            modelBuilder.Entity("OrganizationStructure.Models.Division", b =>
-                {
-                    b.HasOne("OrganizationStructure.Models.Company", null)
-                        .WithMany("Divisions")
-                        .HasForeignKey("CompanyId");
                 });
 
             modelBuilder.Entity("OrganizationStructure.Models.Employee", b =>
@@ -214,17 +187,8 @@ namespace OrganizationStructure.Migrations
                         .HasForeignKey("ProjectId");
                 });
 
-            modelBuilder.Entity("OrganizationStructure.Models.Project", b =>
-                {
-                    b.HasOne("OrganizationStructure.Models.Division", null)
-                        .WithMany("Projects")
-                        .HasForeignKey("DivisionId");
-                });
-
             modelBuilder.Entity("OrganizationStructure.Models.Company", b =>
                 {
-                    b.Navigation("Divisions");
-
                     b.Navigation("Employees");
                 });
 
@@ -236,14 +200,10 @@ namespace OrganizationStructure.Migrations
             modelBuilder.Entity("OrganizationStructure.Models.Division", b =>
                 {
                     b.Navigation("Employees");
-
-                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("OrganizationStructure.Models.Project", b =>
                 {
-                    b.Navigation("Departments");
-
                     b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618

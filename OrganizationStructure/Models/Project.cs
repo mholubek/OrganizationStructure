@@ -8,6 +8,8 @@ namespace OrganizationStructure.Models
         public string Name { get; set; }
         public string Code { get; set; }
         public int? LeaderId { get; set; }
+        public List<Employee>? Employees { get; set; } = new List<Employee>();
+        public List<Department> Departments { get; set; } = new List<Department>();
 
 
     }

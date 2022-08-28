@@ -41,5 +41,17 @@ namespace OrganizationStructure.Models
             throw new ArgumentException("Invalid type");
         }
 
+        public void LoadAssignedUsersToNode(IOrganizationNode node)
+        {
+            if (node.GetType() == typeof(Company))
+                node.Employees = _dbContext.Employees.Where(e => e.CompanyId == node.Id).ToList();
+            if (node.GetType() == typeof(Division))
+                node.Employees = _dbContext.Employees.Where(e => e.DivisionId == node.Id).ToList();
+            if (node.GetType() == typeof(Project))
+                node.Employees = _dbContext.Employees.Where(e => e.ProjectId == node.Id).ToList();
+            if (node.GetType() == typeof(Department))
+                node.Employees = _dbContext.Employees.Where(e => e.DepartmentId == node.Id).ToList();
+        }
+
     }
 }

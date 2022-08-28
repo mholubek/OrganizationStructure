@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrganizationStructure.Data;
 
@@ -11,9 +12,10 @@ using OrganizationStructure.Data;
 namespace OrganizationStructure.Migrations
 {
     [DbContext(typeof(OrganizationStructureDbContext))]
-    partial class OrganizationStructureDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220828212844_AddedNestedNodes")]
+    partial class AddedNestedNodes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

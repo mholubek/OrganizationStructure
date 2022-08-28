@@ -94,6 +94,7 @@ namespace OrganizationStructure.Controllers
             try  //pre pripad zle zadaneho typu uzlu
             {
                 node = _nodeFactory.CreateConcreteNode(nodeType, id).Result;
+                _nodeFactory.LoadAssignedUsersToNode(node);
             }
             catch (Exception ex)
             {
@@ -139,6 +140,12 @@ namespace OrganizationStructure.Controllers
             try  //pre pripad zle zadaneho typu uzlu
             {
                 node = _nodeFactory.CreateConcreteNode(nodeType, id).Result;
+
+                if (node == null)
+                {
+                    return NotFound("No record found against this id");
+                }
+
                 node.Name = name;
                 node.Code = code;
                 node.LeaderId = leaderId;

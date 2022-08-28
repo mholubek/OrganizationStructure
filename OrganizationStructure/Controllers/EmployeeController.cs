@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrganizationStructure.Data;
 using OrganizationStructure.Models;
 using System.Text.RegularExpressions;
@@ -77,6 +78,36 @@ namespace OrganizationStructure.Controllers
             savedEmployee.Email = employee.Email;
             await _dbContext.SaveChangesAsync();
             return Ok("Record updated successfully");
+        }
+
+        [HttpPut("{employeeId}/{nodeType}/{nodeId}")]
+        public async Task<IActionResult> AssignEmployeeToNode(int employeeId, string nodeType, int nodeId)
+        {
+            Employee employee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.Id == employeeId);
+            if (employee == null)
+            {
+                return NotFound("No employee found against this id");
+            }
+
+            IOrganizationNode node = null;
+            NodeFactory nodeFactory = new NodeFactory(_dbContext);
+
+            try  //pre pripad zle zadaneho typu
+            {
+                node = nodeFactory.CreateConcreteNode(nodeType, nodeId).Result;
+                if (node == null)
+                {
+                    return NotFound("No node found against this id");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            node.Employees.Add(employee);
+            await _dbContext.SaveChangesAsync();
+            return Ok("Successfully updated");
 
         }
 
