@@ -8,12 +8,12 @@ namespace OrganizationStructure.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NodeController : ControllerBase
+    public class OrganizationNodeController : ControllerBase
     {
         private readonly OrganizationStructureDbContext _dbContext;
         private readonly NodeFactory _nodeFactory;
 
-        public NodeController(OrganizationStructureDbContext dbContext)
+        public OrganizationNodeController(OrganizationStructureDbContext dbContext)
         {
             _dbContext = dbContext;
             _nodeFactory = new NodeFactory(dbContext);
