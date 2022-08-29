@@ -20,7 +20,7 @@ namespace OrganizationStructure.Controllers
         }
 
         /// <summary>
-        /// Get all users
+        /// Get all employees
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -30,9 +30,9 @@ namespace OrganizationStructure.Controllers
         }
 
         /// <summary>
-        /// Get concrete user by ID
+        /// Get concrete employees by ID
         /// </summary>
-        /// <param name="id">Users ID</param>
+        /// <param name="id">Employee ID</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployee(int id)
@@ -45,9 +45,9 @@ namespace OrganizationStructure.Controllers
         }
 
         /// <summary>
-        /// Create new user
+        /// Create new employee
         /// </summary>
-        /// <param name="employee">Users data</param>
+        /// <param name="employee">Employee data</param>
         /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Employee employee)
@@ -89,9 +89,9 @@ namespace OrganizationStructure.Controllers
         }
 
         /// <summary>
-        /// Change users data
+        /// Change employee data
         /// </summary>
-        /// <param name="employee">Users data</param>
+        /// <param name="employee">Employee data</param>
         /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] Employee employee)
@@ -125,9 +125,9 @@ namespace OrganizationStructure.Controllers
         }
 
         /// <summary>
-        /// Add user into a node
+        /// Add employee into a node
         /// </summary>
-        /// <param name="employeeId">Users id</param>
+        /// <param name="employeeId">Employee id</param>
         /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
         /// <param name="nodeId">Id of concrete node</param>
         /// <returns></returns>
@@ -165,9 +165,9 @@ namespace OrganizationStructure.Controllers
         }
 
         /// <summary>
-        /// Delete user by ID
+        /// Delete employee by ID
         /// </summary>
-        /// <param name="id">Users id</param>
+        /// <param name="id">Employee id</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

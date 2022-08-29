@@ -20,7 +20,7 @@ namespace OrganizationStructure.Controllers
         }
 
         /// <summary>
-        /// Get all users of concrete node
+        /// Get all nodes
         /// </summary>
         /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
         /// <returns></returns>
