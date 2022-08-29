@@ -100,9 +100,8 @@ namespace OrganizationStructure.Controllers
         /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
         /// <param name="name">Name of node</param>
         /// <param name="code">Code of node</param>
-        /// <param name="leaderId">Leaders Id (optional)</param>
         /// <returns></returns>
-        [HttpPost("{nodeType}/{name}/{code}/{leaderId}")]
+        [HttpPost("{nodeType}/{name}/{code}")]
         public async Task<IActionResult> Post(string nodeType, string name, string code, int leaderId = 0)
         {
             IOrganizationNode? newNode = null;
@@ -111,7 +110,7 @@ namespace OrganizationStructure.Controllers
                 newNode = _nodeFactory.CreateNode(nodeType);
                 newNode.Name = name;
                 newNode.Code = code;
-                newNode.LeaderId = leaderId;
+
             }
             catch (Exception ex)
             {
@@ -152,7 +151,10 @@ namespace OrganizationStructure.Controllers
 
                 node.Name = name;
                 node.Code = code;
-                node.LeaderId = leaderId;
+                if (node.Employees.Find(e => e.Id == leaderId) != null)  //kontrola ci zamestnanec pracuje v spolocnosti
+                    node.LeaderId = leaderId;
+                else
+                    return BadRequest("The selected employee is not an employee of the node");
             }
             catch (Exception ex)
             {
