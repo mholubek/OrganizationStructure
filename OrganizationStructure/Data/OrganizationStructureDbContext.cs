@@ -29,7 +29,7 @@ namespace OrganizationStructure.Data
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=CompanyOrganizationStructureDb;Integrated Security=true");
-                //optionsBuilder.UseSqlServer("Data Source=192.168.1.52\\SQLEXPRESS;Initial Catalog=CompanyOrganizationStructureDb;User Id=; Password=");
+                //optionsBuilder.UseSqlServer("Data Source=server name or ip address\\SQLEXPRESS;Initial Catalog=CompanyOrganizationStructureDb;User Id=; Password=");
             }
         }
 
