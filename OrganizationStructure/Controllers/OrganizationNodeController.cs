@@ -22,69 +22,45 @@ namespace OrganizationStructure.Controllers
         [HttpGet("{nodeType}")]
         public IActionResult Get(string nodeType)
         {
-            IOrganizationNode? node = null;
-            try  //pre pripad zle zadaneho typu uzlu
-            {
-                node = _nodeFactory.CreateNode(nodeType);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
 
-            if (node.GetType() == typeof(Company))
+            if (nodeType.ToLower() == "company")
             {
-                /*Pri vypise vsetkych firiem nechcem zobrazovat zamestnancov firmy,
-                  preto vytvaram anonymnu triedu bez nich  
-                */
-                var companies = from c in _dbContext.Companies
-                                select new
-                                {
-                                    Id = c.Id,
-                                    Name = c.Name,
-                                    Code = c.Code,
-                                    LeaderId = c.LeaderId
-                                };
+                List<Company> companies = _dbContext.Companies.ToList();
+                foreach (var company in companies)
+                {
+                    _nodeFactory.LoadNestedNodes(company);
+                }
                 return Ok(companies);
             }
-            else if (node.GetType() == typeof(Division))
+            if (nodeType.ToLower() == "division")
             {
-                var divisions = from c in _dbContext.Divisions
-                                select new
-                                {
-                                    Id = c.Id,
-                                    Name = c.Name,
-                                    Code = c.Code,
-                                    LeaderId = c.LeaderId
-                                };
+                List<Division> divisions = _dbContext.Divisions.ToList();
+                foreach (var division in divisions)
+                {
+                    _nodeFactory.LoadNestedNodes(division);
+                }
                 return Ok(divisions);
             }
-            else if (node.GetType() == typeof(Project))
+            if (nodeType.ToLower() == "project")
             {
-                var projects = from c in _dbContext.Projects
-                               select new
-                               {
-                                   Id = c.Id,
-                                   Name = c.Name,
-                                   Code = c.Code,
-                                   LeaderId = c.LeaderId
-                               };
+                List<Project> projects = _dbContext.Projects.ToList();
+                foreach (var project in projects)
+                {
+                    _nodeFactory.LoadNestedNodes(project);
+                }
                 return Ok(projects);
             }
-            else if (node.GetType() == typeof(Department))
+            if (nodeType.ToLower() == "department")
             {
-                var departments = from c in _dbContext.Departments
-                                  select new
-                                  {
-                                      Id = c.Id,
-                                      Name = c.Name,
-                                      Code = c.Code,
-                                      LeaderId = c.LeaderId
-                                  };
+                List<Department> departments = _dbContext.Departments.ToList();
+                foreach (var department in departments)
+                {
+                    _nodeFactory.LoadNestedNodes(department);
+                }
                 return Ok(departments);
             }
-            return BadRequest("Invalid type");
 
+            return BadRequest("Invalid type");
         }
 
         [HttpGet("{id}/{nodeType}")]
@@ -93,8 +69,8 @@ namespace OrganizationStructure.Controllers
             IOrganizationNode? node = null;
             try  //pre pripad zle zadaneho typu uzlu
             {
-                node = _nodeFactory.CreateConcreteNode(nodeType, id).Result;
-                _nodeFactory.LoadAssignedUsersToNode(node);
+                node = await _nodeFactory.CreateConcreteNode(nodeType, id);
+                _nodeFactory.LoadNestedNodes(node);
             }
             catch (Exception ex)
             {
@@ -139,7 +115,7 @@ namespace OrganizationStructure.Controllers
             IOrganizationNode? node = null;
             try  //pre pripad zle zadaneho typu uzlu
             {
-                node = _nodeFactory.CreateConcreteNode(nodeType, id).Result;
+                node = await _nodeFactory.CreateConcreteNode(nodeType, id);
 
                 if (node == null)
                 {
@@ -164,13 +140,148 @@ namespace OrganizationStructure.Controllers
             return StatusCode(StatusCodes.Status201Created, "Successfully updated");
         }
 
+        [HttpPut("{nodeType}/{nodeId}/{employeeId}/{remove}")]
+        public async Task<IActionResult> AssignEmployee(string nodeType, int nodeId, int employeeId, bool remove = false)
+        {
+            IOrganizationNode? node = null;
+            try  //pre pripad zle zadaneho typu uzlu
+            {
+                node = await _nodeFactory.CreateConcreteNode(nodeType, nodeId);
+                if (node == null)
+                {
+                    return NotFound("No record found against this id");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            Employee employee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.Id == employeeId);
+            if (employee == null)
+            {
+                return NotFound("No record found against this id");
+            }
+            if (remove)
+            {
+                node.Employees.Remove(employee);
+            }
+            else
+            {
+                if (!node.Employees.Contains(employee))  //check if user is already there
+                    node.Employees.Add(employee);
+                else
+                    return BadRequest("User is already in company");
+            }
+            if (node.GetType() == typeof(Company))
+            {
+                if (!remove)
+                    employee.CompanyId = node.Id;
+                else
+                    employee.CompanyId = null;
+            }
+            else if (node.GetType() == typeof(Division))
+            {
+                if (!remove)
+                    employee.DivisionId = node.Id;
+                else
+                    employee.DivisionId = null;
+            }
+            else if (node.GetType() == typeof(Project))
+            {
+                if (!remove)
+                    employee.ProjectId = node.Id;
+                else
+                    employee.ProjectId = null;
+            }
+            else if (node.GetType() == typeof(Department))
+            {
+                if (!remove)
+                    employee.DepartmentId = node.Id;
+                else
+                    employee.DepartmentId = null;
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Successfully updated");
+
+        }
+
+        [HttpPut("{nodeType}/{nodeId}/{nestedNodeId}")]
+        public async Task<IActionResult> AddNestedNode(string nodeType, int nodeId, int nestedNodeId, bool remove = false)
+        {
+            IOrganizationNode? node = null;
+            IOrganizationNode? nestedNode = null;
+            string nestedNodeType = "";
+            if (nodeType.ToLower() == "company")
+            {
+                nestedNodeType = "division";
+            }
+            if (nodeType.ToLower() == "division")
+            {
+                nestedNodeType = "project";
+            }
+            if (nodeType.ToLower() == "project")
+            {
+                nestedNodeType = "department";
+            }
+            if (nodeType.ToLower() == "department")
+            {
+                return BadRequest("The department cannot have a nested object");
+            }
+
+            try  //pre pripad zle zadaneho typu uzlu
+            {
+                node = await _nodeFactory.CreateConcreteNode(nodeType, nodeId);
+                if (node == null)
+                {
+                    return NotFound("No node found against this id");
+                }
+                nestedNode = await _nodeFactory.CreateConcreteNode(nestedNodeType, nestedNodeId);
+                if (nestedNode == null)
+                {
+                    return NotFound("No nested node found against this id");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            if (node.GetType() == typeof(Company))
+            {
+                if (!remove)
+                    ((Company)node).Divisions.Add((Division)nestedNode);
+                else
+                    ((Company)node).Divisions.Remove((Division)nestedNode);
+            }
+            if (node.GetType() == typeof(Division))
+            {
+                if (!remove)
+                    ((Division)node).Projects.Add((Project)nestedNode);
+                else
+                    ((Division)node).Projects.Remove((Project)nestedNode);
+            }
+            if (node.GetType() == typeof(Project))
+            {
+                if (!remove)
+                    ((Project)node).Departments.Add((Department)nestedNode);
+                else
+                    ((Project)node).Departments.Remove((Department)nestedNode);
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return Ok("Successfully saved");
+
+        }
+
         [HttpDelete("{nodeType}/{id}")]
         public async Task<IActionResult> Delete(string nodeType, int id)
         {
             IOrganizationNode? node = null;
             try
             {
-                node = _nodeFactory.CreateConcreteNode(nodeType, id).Result;
+                node = await _nodeFactory.CreateConcreteNode(nodeType, id);
             }
             catch (Exception ex)
             {

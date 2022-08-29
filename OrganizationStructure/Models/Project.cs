@@ -10,7 +10,7 @@ namespace OrganizationStructure.Models
         public int? LeaderId { get; set; }
         public List<Employee>? Employees { get; set; } = new List<Employee>();
         public List<Department> Departments { get; set; } = new List<Department>();
-
+        public int? DivisionId { get; set; }
 
     }
 }

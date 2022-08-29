@@ -10,5 +10,6 @@ namespace OrganizationStructure.Models
         public int? LeaderId { get; set; }
         public List<Employee>? Employees { get; set; } = new List<Employee>();
         public List<Project>? Projects { get; set; } = new List<Project>();
+        public int? CompanyId { get; set; }
     }
 }

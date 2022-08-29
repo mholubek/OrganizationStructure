@@ -57,7 +57,7 @@ namespace OrganizationStructure.Controllers
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] Employee employee)
         {
-            Employee? savedEmployee = _dbContext.Employees.FindAsync(employee.Id).Result;
+            Employee? savedEmployee = await _dbContext.Employees.FindAsync(employee.Id);
             if (savedEmployee == null)
             {
                 return NotFound("No record found against this id");
@@ -94,18 +94,20 @@ namespace OrganizationStructure.Controllers
 
             try  //pre pripad zle zadaneho typu
             {
-                node = nodeFactory.CreateConcreteNode(nodeType, nodeId).Result;
+
+                node = await nodeFactory.CreateConcreteNode(nodeType, nodeId);
                 if (node == null)
                 {
                     return NotFound("No node found against this id");
                 }
+                node.Employees.Add(employee);
+
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
 
-            node.Employees.Add(employee);
             await _dbContext.SaveChangesAsync();
             return Ok("Successfully updated");
 
@@ -114,7 +116,7 @@ namespace OrganizationStructure.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            Employee? savedEmployee = _dbContext.Employees.FindAsync(id).Result;
+            Employee? savedEmployee = await _dbContext.Employees.FindAsync(id);
             if (savedEmployee == null)
             {
                 return NotFound("No record found against this id");

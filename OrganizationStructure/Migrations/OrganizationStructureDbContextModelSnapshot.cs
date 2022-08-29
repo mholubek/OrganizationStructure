@@ -43,7 +43,7 @@ namespace OrganizationStructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("OrganizationStructure.Models.Department", b =>
@@ -72,7 +72,7 @@ namespace OrganizationStructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("OrganizationStructure.Models.Division", b =>
@@ -101,7 +101,7 @@ namespace OrganizationStructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Divisions");
+                    b.ToTable("Divisions", (string)null);
                 });
 
             modelBuilder.Entity("OrganizationStructure.Models.Employee", b =>
@@ -149,7 +149,7 @@ namespace OrganizationStructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("OrganizationStructure.Models.Project", b =>
@@ -178,7 +178,7 @@ namespace OrganizationStructure.Migrations
 
                     b.HasIndex("DivisionId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("OrganizationStructure.Models.Department", b =>

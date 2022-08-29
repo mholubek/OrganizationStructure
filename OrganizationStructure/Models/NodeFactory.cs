@@ -53,5 +53,43 @@ namespace OrganizationStructure.Models
                 node.Employees = _dbContext.Employees.Where(e => e.DepartmentId == node.Id).ToList();
         }
 
+        public void LoadNestedNodes(IOrganizationNode node)
+        {
+
+            if (node.GetType() == typeof(Company))
+            {
+                (node as Company).Divisions = _dbContext.Divisions.Where(x => x.CompanyId == node.Id).ToList();
+                LoadAssignedUsersToNode(node);
+                foreach (var division in (node as Company).Divisions)
+                {
+                    LoadNestedNodes(division);
+                }
+            }
+            if (node.GetType() == typeof(Division))
+            {
+                (node as Division).Projects = _dbContext.Projects.Where(x => x.DivisionId == node.Id).ToList();
+                LoadAssignedUsersToNode(node);
+                foreach (var project in (node as Division).Projects)
+                {
+                    LoadNestedNodes(project);
+                }
+            }
+            if (node.GetType() == typeof(Project))
+            {
+                (node as Project).Departments = _dbContext.Departments.Where(x => x.ProjectId == node.Id).ToList();
+                LoadAssignedUsersToNode(node);
+                foreach (var deparment in (node as Project).Departments)
+                {
+                    LoadNestedNodes(deparment);
+                }
+            }
+            if (node.GetType() == typeof(Department))
+            {
+                LoadAssignedUsersToNode(node);
+            }
+
+        }
+
+
     }
 }
