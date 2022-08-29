@@ -19,6 +19,11 @@ namespace OrganizationStructure.Controllers
             _nodeFactory = new NodeFactory(dbContext);
         }
 
+        /// <summary>
+        /// Get all users of concrete node
+        /// </summary>
+        /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
+        /// <returns></returns>
         [HttpGet("{nodeType}")]
         public IActionResult Get(string nodeType)
         {
@@ -63,6 +68,12 @@ namespace OrganizationStructure.Controllers
             return BadRequest("Invalid type");
         }
 
+        /// <summary>
+        /// Get concrete node
+        /// </summary>
+        /// <param name="id">Id of concrete node</param>
+        /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
+        /// <returns></returns>
         [HttpGet("{id}/{nodeType}")]
         public async Task<IActionResult> Get(int id, string nodeType)
         {
@@ -83,6 +94,14 @@ namespace OrganizationStructure.Controllers
             return Ok(node);
         }
 
+        /// <summary>
+        /// Create new node
+        /// </summary>
+        /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
+        /// <param name="name">Name of node</param>
+        /// <param name="code">Code of node</param>
+        /// <param name="leaderId">Leaders Id (optional)</param>
+        /// <returns></returns>
         [HttpPost("{nodeType}/{name}/{code}/{leaderId}")]
         public async Task<IActionResult> Post(string nodeType, string name, string code, int leaderId = 0)
         {
@@ -109,6 +128,15 @@ namespace OrganizationStructure.Controllers
             return StatusCode(StatusCodes.Status201Created, "Successfully created");
         }
 
+        /// <summary>
+        /// Edit concrete node
+        /// </summary>
+        /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
+        /// <param name="id">Id of concrete node</param>
+        /// <param name="name">Name of node</param>
+        /// <param name="code">Code of node</param>
+        /// <param name="leaderId">Leaders ID (optional)</param>
+        /// <returns></returns>
         [HttpPut("{nodeType}/{id}/{name}/{code}/{leaderId}")]
         public async Task<IActionResult> Put(string nodeType, int id, string name, string code, int leaderId = 0)
         {
@@ -140,6 +168,14 @@ namespace OrganizationStructure.Controllers
             return StatusCode(StatusCodes.Status201Created, "Successfully updated");
         }
 
+        /// <summary>
+        /// Assign employee into a node
+        /// </summary>
+        /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
+        /// <param name="nodeId">Id of concrete node</param>
+        /// <param name="employeeId">Id of employee</param>
+        /// <param name="remove">Remove employee from node (optional)</param>
+        /// <returns></returns>
         [HttpPut("{nodeType}/{nodeId}/{employeeId}/{remove}")]
         public async Task<IActionResult> AssignEmployee(string nodeType, int nodeId, int employeeId, bool remove = false)
         {
@@ -208,6 +244,14 @@ namespace OrganizationStructure.Controllers
 
         }
 
+        /// <summary>
+        /// Assign nested node to parent node
+        /// </summary>
+        /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
+        /// <param name="nodeId">Id of concrete node</param>
+        /// <param name="nestedNodeId">Id of nested node</param>
+        /// <param name="remove">Remove nested node from parent node (optional)</param>
+        /// <returns></returns>
         [HttpPut("{nodeType}/{nodeId}/{nestedNodeId}")]
         public async Task<IActionResult> AddNestedNode(string nodeType, int nodeId, int nestedNodeId, bool remove = false)
         {
@@ -275,6 +319,12 @@ namespace OrganizationStructure.Controllers
 
         }
 
+        /// <summary>
+        /// Delete node
+        /// </summary>
+        /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
+        /// <param name="id">Id of concrete node</param>
+        /// <returns></returns>
         [HttpDelete("{nodeType}/{id}")]
         public async Task<IActionResult> Delete(string nodeType, int id)
         {
