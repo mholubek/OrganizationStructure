@@ -247,7 +247,7 @@ namespace OrganizationStructure.Controllers
         /// <summary>
         /// Assign nested node to parent node
         /// </summary>
-        /// <param name="nodeType">Type of node ('company', 'division', 'project', 'department')</param>
+        /// <param name="nodeType">Type of parent node ('company', 'division', 'project', 'department')</param>
         /// <param name="nodeId">Id of concrete node</param>
         /// <param name="nestedNodeId">Id of nested node</param>
         /// <param name="remove">Remove nested node from parent node (optional)</param>
